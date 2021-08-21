@@ -1,0 +1,1 @@
+CreateObject("Wscript.Shell").Run "C:\Users\Denis\Programing\GitHub Programing\GithHub Automatization\File Management\build\fileOrganizer.bat", 0 , True
