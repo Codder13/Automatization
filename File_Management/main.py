@@ -12,7 +12,7 @@ current = os.getcwd()
 
 files = os.listdir(current)
 
-images = [".jpeg", ".png", ".jpg", ".gif"]  # extensions for images
+images = [".jpeg", ".png", ".jpg", ".gif", ".jfif", ".webp"]  # extensions for images
 text = [".doc", ".txt", ".pdf", ".xlsx", ".docx", ".xls", ".rtf", ".md"]  # extensions for text files
 videos = [".mp4", ".mkv"]  # extensions for videos
 sounds = [".mp3", ".wav", ".m4a"]  # extensions for sounds
