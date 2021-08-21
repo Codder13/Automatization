@@ -1,4 +1,8 @@
-import os, shutil
+import os
+import shutil
+import pywintypes
+from win10toast import ToastNotifier
+
 
 download_path = "C:\\Users\\Denis\\Downloads\\"
 
@@ -17,6 +21,12 @@ codes = [".c", ".java", ".py", ".cpp", ".js", ".html", ".css", ".php"]  # extens
 zip_files = [".zip"]
 folders = [".Folders", ".Installers", ".Music", ".Other", ".Random Code", ".Saved Pictures", ".Saved Videos", ".Text",
            ".Zip Files"]
+
+toast = ToastNotifier()
+toast.show_toast("File Organizer", "The process has been started", duration=30)
+
+
+os.chdir(download_path)
 
 print("Sorting the files...")
 
