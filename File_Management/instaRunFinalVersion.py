@@ -21,7 +21,7 @@ zip_files = [".zip"]
 folders = [".Folders", ".Installers", ".Music", ".Other", ".Random Code", ".Saved Pictures", ".Saved Videos", ".Text",
            ".Zip Files"]
 
-extensions =[images, text, videos, sounds, applications, codes, zip_files]
+extensions = [images, text, videos, sounds, applications, codes, zip_files]
 
 dict = {".Saved Pictures": extensions[0], ".Text": extensions[1],
         ".Saved Videos": extensions[2], ".Music": extensions[3],
@@ -40,7 +40,13 @@ for file in files:
         for ex in dict[keys_list[i]]:
             if file.endswith(ex):
                 destination = os.path.join(download_path, keys_list[i])
-                shutil.move(file, destination)
+
+                if os.path.isfile(os.path.join(destination, file)):
+                    shutil.move(file, os.path.join(download_path, ".Other\\.Duplicates"))
+
+                else:
+                    shutil.move(file, destination)
+
                 break
 
     if os.path.isfile(file):
