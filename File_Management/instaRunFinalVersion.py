@@ -1,7 +1,6 @@
 import os
 import shutil
 
-
 download_path = "C:\\Users\\Denis\\Downloads\\"
 
 s = os.chdir(download_path)
@@ -16,9 +15,10 @@ videos = [".mp4", ".mkv"]  # extensions for videos
 sounds = [".mp3", ".wav", ".m4a"]  # extensions for sounds
 applications = [".exe", ".lnk", ".msi"]  # extensions for applications
 codes = [".c", ".java", ".py", ".cpp", ".js", ".html", ".css", ".php"]  # extensions for codes
-zip_files = [".zip"]    # extension for zip files
+zip_files = [".zip"]  # extension for zip files
 folders = [".Folders", ".Installers", ".Music", ".Other", ".Random Code",
-           ".Saved Pictures", ".Saved Videos", ".Text",".Zip Files"] # all the folders that are excepted from organizing
+           ".Saved Pictures", ".Saved Videos", ".Text",
+           ".Zip Files"]  # all the folders that are excepted from organizing
 
 extensions = [images, text, videos, sounds, applications, codes, zip_files]
 
@@ -27,10 +27,10 @@ dict = {".Saved Pictures": extensions[0], ".Text": extensions[1],
         ".Installers": extensions[4], ".Random Code": extensions[5],
         ".Zip Files": extensions[6]}
 
-
 keys_list = list(dict.keys())
 
 print("Sorting the files...")
+
 
 for file in files:
     destination = ""
@@ -41,6 +41,11 @@ for file in files:
                 destination = os.path.join(download_path, keys_list[i])
 
                 if os.path.isfile(os.path.join(destination, file)):
+                    try:
+                        shutil.move(file, os.path.join(download_path, ".Other\\.Duplicates"))
+                    except shutil.Error:
+                        os.rename(file, f"DUP {file}")
+
                     shutil.move(file, os.path.join(download_path, ".Other\\.Duplicates"))
 
                 else:
@@ -57,4 +62,3 @@ for file in files:
             shutil.move(file, os.path.join(download_path, ".Folders"))
 
 print("Sorting Completed...")
-

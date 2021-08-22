@@ -33,7 +33,7 @@ dict = {".Saved Pictures": extensions[0], ".Text": extensions[1],
 keys_list = list(dict.keys())
 
 toast = ToastNotifier()
-toast.show_toast("File Organizer", "The process has been started", duration=5)
+toast.show_toast("File Organizer", "The process has been started")
 
 
 os.chdir(download_path)
