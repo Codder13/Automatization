@@ -2,8 +2,7 @@ import os
 import shutil
 
 
-
-download_path = "C:\\Users\\Denis\\Desktop\\Downloads\\"
+download_path = "C:\\Users\\Denis\\Downloads\\"
 
 s = os.chdir(download_path)
 
@@ -17,9 +16,9 @@ videos = [".mp4", ".mkv"]  # extensions for videos
 sounds = [".mp3", ".wav", ".m4a"]  # extensions for sounds
 applications = [".exe", ".lnk", ".msi"]  # extensions for applications
 codes = [".c", ".java", ".py", ".cpp", ".js", ".html", ".css", ".php"]  # extensions for codes
-zip_files = [".zip"]
-folders = [".Folders", ".Installers", ".Music", ".Other", ".Random Code", ".Saved Pictures", ".Saved Videos", ".Text",
-           ".Zip Files"]
+zip_files = [".zip"]    # extension for zip files
+folders = [".Folders", ".Installers", ".Music", ".Other", ".Random Code",
+           ".Saved Pictures", ".Saved Videos", ".Text",".Zip Files"] # all the folders that are excepted from organizing
 
 extensions = [images, text, videos, sounds, applications, codes, zip_files]
 

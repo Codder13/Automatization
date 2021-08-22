@@ -22,8 +22,18 @@ zip_files = [".zip"]
 folders = [".Folders", ".Installers", ".Music", ".Other", ".Random Code", ".Saved Pictures", ".Saved Videos", ".Text",
            ".Zip Files"]
 
+
+extensions = [images, text, videos, sounds, applications, codes, zip_files]
+
+dict = {".Saved Pictures": extensions[0], ".Text": extensions[1],
+        ".Saved Videos": extensions[2], ".Music": extensions[3],
+        ".Installers": extensions[4], ".Random Code": extensions[5],
+        ".Zip Files": extensions[6]}
+
+keys_list = list(dict.keys())
+
 toast = ToastNotifier()
-toast.show_toast("File Organizer", "The process has been started", duration=10)
+toast.show_toast("File Organizer", "The process has been started", duration=5)
 
 
 os.chdir(download_path)
@@ -32,47 +42,20 @@ print("Sorting the files...")
 
 for file in files:
     destination = ""
-    for ex in images:
-        if file.endswith(ex):
-            destination = os.path.join(download_path, ".Saved Pictures")
-            shutil.move(file, destination)
-            break
 
-    for ex in text:
-        if file.endswith(ex):
-            destination = os.path.join(download_path, ".Text")
-            shutil.move(file, destination)
-            break
+    for i in range(len(keys_list)):
+        for ex in dict[keys_list[i]]:
+            if file.endswith(ex):
+                destination = os.path.join(download_path, keys_list[i])
 
-    for ex in sounds:
-        if file.endswith(ex):
-            destination = os.path.join(download_path, ".Music")
-            shutil.move(file, destination)
-            break
+                if os.path.isfile(os.path.join(destination, file)):
+                    shutil.move(file, os.path.join(download_path, ".Other\\.Duplicates"))
 
-    for ex in videos:
-        if file.endswith(ex):
-            destination =  os.path.join(download_path, ".Saved Videos")
-            shutil.move(file, destination)
-            break
+                else:
+                    shutil.move(file, destination)
 
-    for ex in applications:
-        if file.endswith(ex):
-            destination = os.path.join(download_path, ".Installers")
-            shutil.move(file, destination)
-            break
+                break
 
-    for ex in codes:
-        if file.endswith(ex):
-            destination = os.path.join(download_path, ".Random Code")
-            shutil.move(file, destination)
-            break
-
-    for ex in zip_files:
-        if file.endswith(ex):
-            destination = os.path.join(download_path, ".Zip Files")
-            shutil.move(file, destination)
-            break
     if os.path.isfile(file):
         if destination == "":
             shutil.move(file, os.path.join(download_path, ".Other"))
