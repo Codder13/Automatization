@@ -49,8 +49,11 @@ for file in files:
                 destination = os.path.join(download_path, keys_list[i])
 
                 if os.path.isfile(os.path.join(destination, file)):
-                    shutil.move(file, os.path.join(download_path, ".Other\\.Duplicates"))
-
+                    try:
+                        shutil.move(file, os.path.join(download_path, ".Other\\.Duplicates"))
+                    except shutil.Error:
+                        new_path_file = os.path.join(download_path, ".Other\\.Duplicates")
+                        os.rename(file, os.path.join(new_path_file, f"DUP {file}"))
                 else:
                     shutil.move(file, destination)
 
