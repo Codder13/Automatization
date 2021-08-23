@@ -44,10 +44,8 @@ for file in files:
                     try:
                         shutil.move(file, os.path.join(download_path, ".Other\\.Duplicates"))
                     except shutil.Error:
-                        os.rename(file, f"DUP {file}")
-
-                    shutil.move(file, os.path.join(download_path, ".Other\\.Duplicates"))
-
+                        new_path_file = os.path.join(download_path, ".Other\\.Duplicates")
+                        os.rename(file, os.path.join(new_path_file, f"DUP {file}"))
                 else:
                     shutil.move(file, destination)
 
