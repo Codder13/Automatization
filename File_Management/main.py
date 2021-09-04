@@ -34,7 +34,6 @@ current = os.getcwd()
 
 files = os.listdir(current)
 
-
 folders = [".Folders", ".Installers", ".Music", ".Other", ".Random Code", ".Saved Pictures", ".Saved Videos", ".Text",
            ".Zip Files"]
 
