@@ -17,9 +17,10 @@ videos = [".mp4", ".mkv"]  # extensions for videos
 sounds = [".mp3", ".wav", ".m4a"]  # extensions for sounds
 applications = [".exe", ".lnk", ".msi"]  # extensions for applications
 codes = [".c", ".java", ".py", ".cpp", ".js", ".html", ".css", ".php"]  # extensions for codes
-zip_files = [".zip"]
-folders = [".Folders", ".Installers", ".Music", ".Other", ".Random Code", ".Saved Pictures", ".Saved Videos", ".Text",
-           ".Zip Files"]
+zip_files = [".zip", ".rar"]  # extension for zip files
+folders = [".Folders", ".Installers", ".Music", ".Other", ".Random Code",
+           ".Saved Pictures", ".Saved Videos", ".Text",
+           ".Zip Files"]  # all the folders that are excepted from organizing
 
 
 print("Sorting the files...")

@@ -3,24 +3,37 @@ import shutil
 
 download_path = "C:\\Users\\Denis\\Downloads\\"
 
+
+with open('C:\\Users\\Denis\\Downloads\\.Folders\\Extensions_file.txt', 'r') as file:
+    images = file.readline()
+    text = file.readline()
+    videos = file.readline()
+    sounds = file.readline()
+    applications = file.readline()
+    codes = file.readline()
+    zip_files = file.readline()
+
+
+extensions = [images, text, videos, sounds, applications, codes, zip_files]
+
+
+for i, j in enumerate(extensions):
+
+    j = j.split(', ')
+    j[0] = j[0].split('= ')[1]
+    j[-1] = j[-1].split('\n')[0]
+    extensions[i] = j
+
+
 s = os.chdir(download_path)
 
 current = os.getcwd()
 
 files = os.listdir(current)
 
-images = [".jpeg", ".png", ".jpg", ".gif", ".jfif"]  # extensions for images
-text = [".doc", ".txt", ".pdf", ".xlsx", ".docx", ".xls", ".rtf", ".md"]  # extensions for text files
-videos = [".mp4", ".mkv"]  # extensions for videos
-sounds = [".mp3", ".wav", ".m4a"]  # extensions for sounds
-applications = [".exe", ".lnk", ".msi"]  # extensions for applications
-codes = [".c", ".java", ".py", ".cpp", ".js", ".html", ".css", ".php"]  # extensions for codes
-zip_files = [".zip"]  # extension for zip files
 folders = [".Folders", ".Installers", ".Music", ".Other", ".Random Code",
            ".Saved Pictures", ".Saved Videos", ".Text",
            ".Zip Files"]  # all the folders that are excepted from organizing
-
-extensions = [images, text, videos, sounds, applications, codes, zip_files]
 
 dict = {".Saved Pictures": extensions[0], ".Text": extensions[1],
         ".Saved Videos": extensions[2], ".Music": extensions[3],
