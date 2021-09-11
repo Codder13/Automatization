@@ -1,21 +1,14 @@
-with open('ex.txt', 'r') as file:
-    images = file.readline()
-    text = file.readline()
-    videos = file.readline()
-    sounds = file.readline()
-    applications = file.readline()
-    codes = file.readline()
-    zip_files = file.readline()
+import os
 
-extensions = [images, text, videos, sounds, applications, codes, zip_files]
+Folder_files = os.listdir("C:\\Users\\Denis\\Desktop\\Downloads\\.Folders\\")
 
-for i, j in enumerate(extensions):
+ext_file = "Extensions_file.txt"
 
-    j = j.split(', ')
-    j[0] = j[0].split('= ')[1]
-    j[-1] = j[-1].split('\n')[0]
-    extensions[i] = j
-
-print(extensions)
-
+if ext_file not in Folder_files:
+    with open(ext_file, 'a') as ex_file:
+        ex_file.write(
+            "images = .jpeg, .png, .jpg, .gif, .jfif\ntext = .doc, .txt, .pdf, .xlsx, .docx, .xls, .rtf, .md\n"
+            "videos = .mp4, .mkv, .webp, .webm\nsounds = .mp3, .wav, .m4a\napplications = .exe, .lnk, .msi\n"
+            "codes = .c, .java, .py, .cpp, .js, .html, .css, .php, .rar\nzip_files = .zip"
+        )
 

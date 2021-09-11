@@ -8,26 +8,6 @@ UserName = getpass.getuser()
 download_path = f"C:\\Users\\{UserName}\\Downloads\\"
 
 
-with open('C:\\Users\\Denis\\Downloads\\.Folders\\Extensions_file.txt', 'r') as file:
-    images = file.readline()
-    text = file.readline()
-    videos = file.readline()
-    sounds = file.readline()
-    applications = file.readline()
-    codes = file.readline()
-    zip_files = file.readline()
-
-
-extensions = [images, text, videos, sounds, applications, codes, zip_files]
-
-
-for i, j in enumerate(extensions):
-
-    j = j.split(', ')
-    j[0] = j[0].split('= ')[1]
-    j[-1] = j[-1].split('\n')[0]
-    extensions[i] = j
-
 
 s = os.chdir(download_path)
 
@@ -41,6 +21,37 @@ folders = [".Folders", ".Installers", ".Music", ".Other", ".Random Code", ".Save
 for folder in folders:
     if folder not in files:
         os.mkdir(os.path.join(download_path, folder))
+
+Folder_files = os.listdir(os.path.join(download_path, ".Folders"))
+
+ext_file = "Extensions_file.txt"
+
+if ext_file not in Folder_files:
+    with open(os.path.join(download_path, ".Folders\\Extensions_file.txt"), 'a') as ex_file:
+        ex_file.write(
+            "images = .jpeg, .png, .jpg, .gif, .jfif\ntext = .doc, .txt, .pdf, .xlsx, .docx, .xls, .rtf, .md\n"
+            "videos = .mp4, .mkv, .webp, .webm\nsounds = .mp3, .wav, .m4a\napplications = .exe, .lnk, .msi\n"
+            "codes = .c, .java, .py, .cpp, .js, .html, .css, .php, .rar\nzip_files = .zip"
+        )
+
+
+with open(os.path.join(download_path, ".Folders\\Extensions_file.txt"), 'r') as file:
+    images = file.readline()
+    text = file.readline()
+    videos = file.readline()
+    sounds = file.readline()
+    applications = file.readline()
+    codes = file.readline()
+    zip_files = file.readline()
+
+extensions = [images, text, videos, sounds, applications, codes, zip_files]
+
+for i, j in enumerate(extensions):
+    j = j.split(', ')
+    j[0] = j[0].split('= ')[1]
+    j[-1] = j[-1].split('\n')[0]
+    extensions[i] = j
+
 
 dict = {".Saved Pictures": extensions[0], ".Text": extensions[1],
         ".Saved Videos": extensions[2], ".Music": extensions[3],
