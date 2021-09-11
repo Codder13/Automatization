@@ -35,6 +35,10 @@ folders = [".Folders", ".Installers", ".Music", ".Other", ".Random Code",
            ".Saved Pictures", ".Saved Videos", ".Text",
            ".Zip Files"]  # all the folders that are excepted from organizing
 
+for folder in folders:
+    if folder not in files:
+        os.mkdir(os.path.join(download_path, folder))
+
 dict = {".Saved Pictures": extensions[0], ".Text": extensions[1],
         ".Saved Videos": extensions[2], ".Music": extensions[3],
         ".Installers": extensions[4], ".Random Code": extensions[5],
