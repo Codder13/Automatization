@@ -1,7 +1,9 @@
 import os
 import shutil
+import getpass
 
-download_path = "C:\\Users\\Denis\\Desktop\\Downloads"
+UserName = getpass.getuser()
+download_path = f"C:\\Users\\{UserName}\\Downloads\\"
 
 
 with open('C:\\Users\\Denis\\Downloads\\.Folders\\Extensions_file.txt', 'r') as file:

@@ -2,9 +2,10 @@ import os
 import shutil
 import pywintypes
 from win10toast import ToastNotifier
+import getpass
 
-
-download_path = "C:\\Users\\Denis\\Downloads\\"
+UserName = getpass.getuser()
+download_path = f"C:\\Users\\{UserName}\\Downloads\\"
 
 
 with open('C:\\Users\\Denis\\Downloads\\.Folders\\Extensions_file.txt', 'r') as file:
