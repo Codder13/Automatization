@@ -1,8 +1,0 @@
-images = .jpeg, .png, .jpg, .gif, .jfif
-text = .doc, .txt, .pdf, .xlsx, .docx, .xls, .rtf, .md
-videos = .mp4, .mkv
-sounds = .mp3, .wav, .m4a
-applications = .exe, .lnk, .msi
-codes = .c, .java, .py, .cpp, .js, .html, .css, .php
-zip_files = .zip, .rar
-folders = .Folders, .Installers, .Music, .Other, .Random Code, .Saved Pictures, .Saved Videos, .Text, .Zip Files
