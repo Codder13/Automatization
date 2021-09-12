@@ -3,7 +3,7 @@ import shutil
 import getpass
 
 UserName = getpass.getuser()
-download_path = f"C:\\Users\\{UserName}\\Downloads\\"
+download_path = f"C:\\Users\\{UserName}\\Desktop\\Downloads\\"
 
 s = os.chdir(download_path)
 
