@@ -1,14 +1,16 @@
-import os
+from PyQt5.QtWidgets import QApplication, QMainWindow
+import sys
 
-Folder_files = os.listdir("C:\\Users\\Denis\\Desktop\\Downloads\\.Folders\\")
 
-ext_file = "Extensions_file.txt"
+class Window(QMainWindow):
+    def __init__(self):
+        super().__init__()
 
-if ext_file not in Folder_files:
-    with open(ext_file, 'a') as ex_file:
-        ex_file.write(
-            "images = .jpeg, .png, .jpg, .gif, .jfif\ntext = .doc, .txt, .pdf, .xlsx, .docx, .xls, .rtf, .md\n"
-            "videos = .mp4, .mkv, .webp, .webm\nsounds = .mp3, .wav, .m4a\napplications = .exe, .lnk, .msi\n"
-            "codes = .c, .java, .py, .cpp, .js, .html, .css, .php, .rar\nzip_files = .zip"
-        )
+        self.setGeometry(300, 300, 600, 400)
+        self.setWindowTitle("PyQt5 window")
+        self.show()
 
+
+app = QApplication(sys.argv)
+window = Window()
+sys.exit(app.exec_())

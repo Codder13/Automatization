@@ -1,4 +1,5 @@
 os
 shutil
-win10toast
+win10toast~=0.9
 getpass
+PyQt5~=5.15.4
