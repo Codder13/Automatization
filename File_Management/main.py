@@ -61,7 +61,8 @@ dict = {".Saved Pictures": extensions[0], ".Text": extensions[1],
 keys_list = list(dict.keys())
 
 toast = ToastNotifier()
-toast.show_toast("File Organizer", "The process has been started")
+toast.show_toast("File Organizer", "The process has been started",
+                 'C:\\Users\\Denis\\Programing\\.GitHub_Programing\\GithHub_Automatization\\File_Management\\Organizer.ico')
 
 
 os.chdir(download_path)
@@ -96,3 +97,6 @@ for file in files:
             shutil.move(file, os.path.join(download_path, ".Folders"))
 
 print("Sorting Completed...")
+
+toast.show_toast("File Organizer", "Finished organizing",
+                 'C:\\Users\\Denis\\Programing\\.GitHub_Programing\\GithHub_Automatization\\File_Management\\Organizer.ico')
