@@ -49,7 +49,7 @@ class Ui_MainWindow(object):
         self.label = QtWidgets.QLabel(self.frame)
         self.label.setGeometry(QtCore.QRect(270, 20, 41, 41))
         self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap("icon.ico"))
+        self.label.setPixmap(QtGui.QPixmap(os.path.join(RESOURCES, "icon.ico")))
         self.label.setScaledContents(True)
         self.label.setObjectName("label")
 
@@ -63,7 +63,7 @@ class Ui_MainWindow(object):
         self.path.setObjectName("path")
 
         self.sort = QtWidgets.QPushButton(self.frame)
-        self.sort.setGeometry(QtCore.QRect(270, 180, 181, 41))
+        self.sort.setGeometry(QtCore.QRect(290, 180, 181, 55))
         font = QtGui.QFont()
         font.setPointSize(14)
         self.sort.setFont(font)
