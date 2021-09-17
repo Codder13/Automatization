@@ -2,19 +2,28 @@
 #
 # myappid = 'file.organizer'  # arbitrary string
 # ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
-import os
-import getpass
+import sys
 
-USER_NAME = getpass.getuser()
-DOWNLOAD_PATH = f"C:\\Users\\{USER_NAME}\\Downloads\\"
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import QFileDialog, QApplication, QMainWindow
+from PyQt import Ui_MainWindow
 
 
-model_file = r"C:\Users\Denis\.organize\resources\Extensions_file.txt"
+class Main(QMainWindow, Ui_MainWindow):
+    def __init__(self):
+        QMainWindow.__init__(self)
+        self.setupUi(self)
 
-with open(model_file, 'r') as file:
-    extensions = file.read()
-    Folder_files = os.listdir(os.path.join(DOWNLOAD_PATH, ".Folders"))
-    ext_file = os.path.join(DOWNLOAD_PATH, ".Folders\\Extensions_file.txt")
-    if ext_file not in Folder_files:
-        with open(ext_file, 'w') as ex_file:
-            ex_file.write(extensions)
+    def browse(self):
+        fname = QFileDialog.getOpenFileName(self, 'Open file',
+                                            'c:\\', "Image files (*.jpg *.gif)")
+        data = fname.read()
+        self.textEdit.setText(data)
+        fname.close()
+
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = Main()
+    window.show()
+    sys.exit(app.exec_())

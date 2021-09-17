@@ -4,7 +4,7 @@ import shutil
 from win10toast import ToastNotifier
 
 USER_NAME = getpass.getuser()
-DEFAULT_DOWNLOAD_PATH = f"C:\\Users\\{USER_NAME}\\Downloads\\"
+DEFAULT_DOWNLOAD_PATH = f"C:\\Users\\{USER_NAME}\\Desktop\\test"
 RESOURCES = f"C:\\Users\\{USER_NAME}\\.organize\\resources\\"
 FOLDERS = [".Folders", ".Installers", ".Music", ".Other", ".Random Code", ".Saved Pictures", ".Saved Videos", ".Text",
            ".Zip Files"]
@@ -39,7 +39,7 @@ def create_ext_file(download_path):
         extensions = file.read()
         Folder_files = os.listdir(os.path.join(download_path, ".Folders"))
         ext_file = os.path.join(download_path, ".Folders\\Extensions_file.txt")
-        if ext_file not in Folder_files:
+        if 'Extensions_file.txt' not in Folder_files:
             with open(ext_file, 'w') as ex_file:
                 ex_file.write(extensions)
 

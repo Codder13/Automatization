@@ -36,7 +36,7 @@ def create_ext_file(download_path):
         extensions = file.read()
         Folder_files = os.listdir(os.path.join(download_path, ".Folders"))
         ext_file = os.path.join(download_path, ".Folders\\Extensions_file.txt")
-        if ext_file not in Folder_files:
+        if 'Extensions_file.txt' not in Folder_files:
             with open(ext_file, 'w') as ex_file:
                 ex_file.write(extensions)
 
