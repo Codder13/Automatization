@@ -11,8 +11,6 @@ FOLDERS = [".Folders", ".Installers", ".Music", ".Other", ".Random Code", ".Save
 
 toast = ToastNotifier()
 os.chdir(DEFAULT_DOWNLOAD_PATH)
-current = os.getcwd()
-files = os.listdir(current)
 
 
 def toastNotifier(message):
@@ -20,18 +18,23 @@ def toastNotifier(message):
 
 
 def setup(download_path):
+    os.chdir(download_path)
     create_folders(download_path)
     create_ext_file(download_path)
 
 
 def create_folders(download_path):
+    os.chdir(download_path)
+    current = os.getcwd()
+    files = os.listdir(current)
     for folder in FOLDERS:
         if folder not in files:
             os.mkdir(os.path.join(download_path, folder))
 
 
 def create_ext_file(download_path):
-    model_file = os.path.join(RESOURCES,"Extensions_file.txt")
+    os.chdir(download_path)
+    model_file = os.path.join(RESOURCES, "Extensions_file.txt")
     with open(model_file, 'r') as file:
         extensions = file.read()
         Folder_files = os.listdir(os.path.join(download_path, ".Folders"))
@@ -42,6 +45,7 @@ def create_ext_file(download_path):
 
 
 def create_mapping(download_path):
+    os.chdir(download_path)
     with open(os.path.join(download_path, ".Folders\\Extensions_file.txt"), 'r') as file:
         images = file.readline()
         text = file.readline()
@@ -71,6 +75,8 @@ def sorter(download_path, ext_dict):
     os.chdir(download_path)
     print("Sorting the files...")
     keys_list = list(ext_dict.keys())
+    current = os.getcwd()
+    files = os.listdir(current)
 
     for file in files:
         destination = ""

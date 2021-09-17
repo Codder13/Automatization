@@ -18,7 +18,7 @@ files = os.listdir(current)
 def toastNotifier(message):
     toast.show_toast("File Organizer", message,
                      'C:\\Users\\Denis\\Programing\\.GitHub_Programing\\' +
-                     'GithHub_Automatization\\File_Management\\resources\\Organizer.ico', 2)
+                     'GithHub_Automatization\\File_Management\\resources\\icon.ico', 2)
 
 
 def setup(download_path):
@@ -40,7 +40,7 @@ def create_ext_file(download_path):
             ex_file.write(
                 "images = .jpeg, .png, .jpg, .gif, .jfif\ntext = .doc, .txt, .pdf, .xlsx, .docx, .xls, .rtf, .md\n"
                 "videos = .mp4, .mkv, .webp, .webm\nsounds = .mp3, .wav, .m4a\napplications = .exe, .lnk, .msi\n"
-                "codes = .c, .java, .py, .cpp, .js, .html, .css, .php, .rar\nzip_files = .zip, .rar, .7z"
+                "codes = .c, .java, .py, .cpp, .js, .html, .css, .php\nzip_files = .zip, .rar, .7z"
             )
 
 
