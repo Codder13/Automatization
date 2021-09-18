@@ -12,7 +12,8 @@ ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(744, 269)
+        # MainWindow.resize(744, 269)
+        MainWindow.setFixedSize(744, 269)
         MainWindow.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         MainWindow.setMouseTracking(False)
         icon = QtGui.QIcon()
@@ -93,7 +94,7 @@ class Ui_MainWindow(object):
         self.actionSave_Path_2.setObjectName("actionSave_Path_2")
 
         self.sort.clicked.connect(sort)
-        self.browseBt.clicked.connect(self.browse)
+        self.browseBt.clicked.connect(self.accesBrowesdPath)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -118,13 +119,25 @@ class Ui_MainWindow(object):
 
     def browse(self):
         try:
-            filename = QFileDialog.getOpenFileName(None, 'Chose Directory', '.')
-            fname = open(filename)
-            data = fname.read()
-            self.path.setText(data)
-            fname.close()
+            options = QFileDialog.Options()
+            # options |= QFileDialog.DontUseNativeDialog
+            options |= QFileDialog.DontUseCustomDirectoryIcons
+
+            dialog = QFileDialog()
+            dialog.setOptions(options)
+
+            dialog.setFileMode(QFileDialog.DirectoryOnly)
+            if dialog.exec_() == QtWidgets.QDialog.Accepted:
+                path = dialog.selectedFiles()[0]  # returns a list
+                return path
+            else:
+                return ''
         except TypeError:
             pass
+
+    def accesBrowesdPath(self):
+        self.browsedPath = self.browse()
+        self.path.setText(self.browsedPath)
 
 
 def sort():
@@ -142,7 +155,7 @@ def sort():
 def popUpWarning():
     font = QtGui.QFont()
     font.setFamily("Calibri")
-    font.setPointSize(11)
+    font.setPointSize(13)
 
     icon = QtGui.QIcon()
     icon.addPixmap(QtGui.QPixmap(os.path.join(RESOURCES, "icon.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -150,9 +163,9 @@ def popUpWarning():
     warning = QMessageBox()
     warning.setWindowTitle('Invalid path')
     warning.setWindowIcon(icon)
+    warning.setFont(font)
     warning.setText("You need to chose a valid path.")
     warning.setIcon(QMessageBox.Information)
-    warning.setFont(font)
 
     warning.exec_()
 
