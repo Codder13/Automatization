@@ -94,7 +94,7 @@ class Ui_MainWindow(object):
         self.actionSave_Path_2.setObjectName("actionSave_Path_2")
 
         self.sort.clicked.connect(sort)
-        self.browseBt.clicked.connect(self.accesBrowesdPath)
+        self.browseBt.clicked.connect(self.setPath)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -114,8 +114,9 @@ class Ui_MainWindow(object):
     def getPath(self):
         return self.path.text()
 
-    def setPath(self, ):
-        pass
+    def setPath(self):
+        self.browsedPath = self.browse()
+        self.path.setText(self.browsedPath)
 
     def browse(self):
         try:
@@ -134,10 +135,6 @@ class Ui_MainWindow(object):
                 return ''
         except TypeError:
             pass
-
-    def accesBrowesdPath(self):
-        self.browsedPath = self.browse()
-        self.path.setText(self.browsedPath)
 
 
 def sort():

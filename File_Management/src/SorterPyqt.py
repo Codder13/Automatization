@@ -4,13 +4,13 @@ import shutil
 from win10toast import ToastNotifier
 
 USER_NAME = getpass.getuser()
-DEFAULT_DOWNLOAD_PATH = f"C:\\Users\\{USER_NAME}\\Desktop\\test"
+# DEFAULT_DOWNLOAD_PATH = f"C:\\Users\\{USER_NAME}\\Desktop\\test"
 RESOURCES = f"C:\\Users\\{USER_NAME}\\.organize\\resources\\"
 FOLDERS = [".Folders", ".Installers", ".Music", ".Other", ".Random Code", ".Saved Pictures", ".Saved Videos", ".Text",
            ".Zip Files"]
 
 toast = ToastNotifier()
-os.chdir(DEFAULT_DOWNLOAD_PATH)
+# os.chdir(DEFAULT_DOWNLOAD_PATH)
 
 
 def toastNotifier(message):
@@ -115,6 +115,3 @@ def main(download_path):
     dicto = create_mapping(download_path)
     sorter(download_path, dicto)
 
-
-if __name__ == '__main__':
-    main(DEFAULT_DOWNLOAD_PATH)
