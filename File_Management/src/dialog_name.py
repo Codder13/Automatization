@@ -8,7 +8,7 @@ class Ui_Dialog(object):
         Dialog.setObjectName("Dialog")
         Dialog.resize(561, 209)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("icon.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(os.path.join(RESOURCES, 'icon.ico')), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
 
         self.frame = QtWidgets.QFrame(Dialog)
@@ -58,14 +58,3 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(_translate("Dialog", "Set Name for Path"))
         self.label.setText(_translate("Dialog", "Path:"))
         self.label_2.setText(_translate("Dialog", "Name:"))
-
-
-app = QtWidgets.QApplication(sys.argv)
-
-if __name__ == "__main__":
-    Dialog = QtWidgets.QDialog()
-    ui = Ui_Dialog()
-    ui.setupUi(Dialog)
-    Dialog.show()
-
-sys.exit(app.exec_())

@@ -31,14 +31,14 @@ def create_folders(download_path):
 
 
 def create_ext_file(download_path):
-    model_file = os.path.join(RESOURCES,"Extensions_file.txt")
+    model_file = os.path.join(RESOURCES, "Extensions_file.txt")
     with open(model_file, 'r') as file:
         extensions = file.read()
-        Folder_files = os.listdir(os.path.join(download_path, ".Folders"))
-        ext_file = os.path.join(download_path, ".Folders\\Extensions_file.txt")
-        if 'Extensions_file.txt' not in Folder_files:
-            with open(ext_file, 'w') as ex_file:
-                ex_file.write(extensions)
+    Folder_files = os.listdir(os.path.join(download_path, ".Folders"))
+    ext_file = os.path.join(download_path, ".Folders\\Extensions_file.txt")
+    if 'Extensions_file.txt' not in Folder_files:
+        with open(ext_file, 'w') as ex_file:
+            ex_file.write(extensions)
 
 
 def create_mapping(download_path):

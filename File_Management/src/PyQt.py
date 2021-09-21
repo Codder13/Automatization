@@ -1,18 +1,12 @@
-import os.path
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
-import ctypes
 import sys
 from SorterPyqt import *
-
-myappid = 'file.organizer'
-ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        # MainWindow.resize(744, 269)
         MainWindow.setFixedSize(744, 269)
         MainWindow.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         MainWindow.setMouseTracking(False)
@@ -64,7 +58,7 @@ class Ui_MainWindow(object):
         self.path.setObjectName("path")
 
         self.sort = QtWidgets.QPushButton(self.frame)
-        self.sort.setGeometry(QtCore.QRect(290, 180, 181, 55))
+        self.sort.setGeometry(QtCore.QRect(290, 200, 181, 41))
         font = QtGui.QFont()
         font.setPointSize(14)
         self.sort.setFont(font)
@@ -77,6 +71,23 @@ class Ui_MainWindow(object):
         self.browseBt.setFont(font)
         self.browseBt.setObjectName("browseBt")
 
+        self.savedPaths = QtWidgets.QComboBox(self.frame)
+        self.savedPaths.setGeometry(QtCore.QRect(130, 150, 161, 31))
+        self.savedPaths.setObjectName("savedPaths")
+        self.savedPaths.addItem("")
+
+        self.label_4 = QtWidgets.QLabel(self.frame)
+        self.label_4.setGeometry(QtCore.QRect(20, 150, 111, 31))
+        self.label_4.setObjectName("label_4")
+
+        self.save_path = QtWidgets.QPushButton(self.frame)
+        self.save_path.setGeometry(QtCore.QRect(620, 140, 111, 31))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.save_path.setFont(font)
+        self.save_path.setCheckable(False)
+        self.save_path.setObjectName("save_path")
+
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -84,19 +95,12 @@ class Ui_MainWindow(object):
 
         MainWindow.setStatusBar(self.statusbar)
 
-        self.actionSave_Path = QtWidgets.QAction(MainWindow)
-        self.actionSave_Path.setObjectName("actionSave_Path")
-
-        self.actionChange_Mode = QtWidgets.QAction(MainWindow)
-        self.actionChange_Mode.setObjectName("actionChange_Mode")
-
-        self.actionSave_Path_2 = QtWidgets.QAction(MainWindow)
-        self.actionSave_Path_2.setObjectName("actionSave_Path_2")
-
-        self.sort.clicked.connect(sort)
+        self.sort.clicked.connect(self.sort_func)
         self.browseBt.clicked.connect(self.setPath)
+        self.save_path.clicked.connect(self.add_saved_path)
 
         self.retranslateUi(MainWindow)
+
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -106,47 +110,49 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "Path to folder :"))
         self.sort.setText(_translate("MainWindow", "Sort"))
         self.browseBt.setText(_translate("MainWindow", "Browse.."))
-        self.actionSave_Path.setText(_translate("MainWindow", "Save Path"))
-        self.actionChange_Mode.setText(_translate("MainWindow", "Change Mode"))
-        self.actionSave_Path_2.setText(_translate("MainWindow", "Save Path"))
-        self.actionSave_Path_2.setShortcut(_translate("MainWindow", "Ctrl+S"))
+        self.savedPaths.setItemText(0, _translate("MainWindow", "Custom"))
+        self.label_4.setText(_translate("MainWindow", "Saved paths :"))
+        self.save_path.setText(_translate("MainWindow", "Save path"))
 
     def getPath(self):
         return self.path.text()
 
     def setPath(self):
-        self.browsedPath = self.browse()
+        self.browsedPath = browse()
         self.path.setText(self.browsedPath)
 
-    def browse(self):
+    def sort_func(self):
+        DOWNLOAD_PATH = self.getPath()
         try:
-            options = QFileDialog.Options()
-            # options |= QFileDialog.DontUseNativeDialog
-            options |= QFileDialog.DontUseCustomDirectoryIcons
+            os.chdir(DOWNLOAD_PATH)
+            create_folders(DOWNLOAD_PATH)
+            create_ext_file(DOWNLOAD_PATH)
+            EXT_FILE = create_mapping(DOWNLOAD_PATH)
+            sorter(DOWNLOAD_PATH, EXT_FILE)
+        except OSError:
+            popUpWarning()
 
-            dialog = QFileDialog()
-            dialog.setOptions(options)
-
-            dialog.setFileMode(QFileDialog.DirectoryOnly)
-            if dialog.exec_() == QtWidgets.QDialog.Accepted:
-                path = dialog.selectedFiles()[0]  # returns a list
-                return path
-            else:
-                return ''
-        except TypeError:
-            pass
+    def add_saved_path(self):
+        pass
 
 
-def sort():
-    DOWNLOAD_PATH = ui.getPath()
+def browse():
     try:
-        os.chdir(DOWNLOAD_PATH)
-        create_folders(DOWNLOAD_PATH)
-        create_ext_file(DOWNLOAD_PATH)
-        EXT_FILE = create_mapping(DOWNLOAD_PATH)
-        sorter(DOWNLOAD_PATH, EXT_FILE)
-    except OSError:
-        popUpWarning()
+        options = QFileDialog.Options()
+        # options |= QFileDialog.DontUseNativeDialog
+        options |= QFileDialog.DontUseCustomDirectoryIcons
+
+        dialog = QFileDialog()
+        dialog.setOptions(options)
+
+        dialog.setFileMode(QFileDialog.DirectoryOnly)
+        if dialog.exec_() == QtWidgets.QDialog.Accepted:
+            path = dialog.selectedFiles()[0]  # returns a list
+            return path
+        else:
+            return ''
+    except TypeError:
+        pass
 
 
 def popUpWarning():
@@ -165,14 +171,3 @@ def popUpWarning():
     warning.setIcon(QMessageBox.Information)
 
     warning.exec_()
-
-
-app = QtWidgets.QApplication(sys.argv)
-
-if __name__ == "__main__":
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-
-sys.exit(app.exec_())
