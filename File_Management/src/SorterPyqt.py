@@ -3,29 +3,78 @@ import os
 import shutil
 from win10toast import ToastNotifier
 from configparser import ConfigParser
+import sys
+import ctypes
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from PyQt import Ui_MainWindow
 
-config = ConfigParser()
+"""Variables"""
 USER_NAME = getpass.getuser()
-# DEFAULT_DOWNLOAD_PATH = f"C:\\Users\\{USER_NAME}\\Desktop\\test"
+CONFIG_LOCATION = 'config.ini'
 RESOURCES = f"C:\\Users\\{USER_NAME}\\.organize\\resources\\"
 FOLDERS = [".Folders", ".Installers", ".Music", ".Other", ".Random Code", ".Saved Pictures", ".Saved Videos", ".Text",
            ".Zip Files"]
+"""_________________________________________________________________________________________________________________"""
 
+"""Other stuff"""
 toast = ToastNotifier()
-# os.chdir(DEFAULT_DOWNLOAD_PATH)
+
+config = ConfigParser()
+config.read(CONFIG_LOCATION)
+SECTION = 'saved_paths'
+myappid = 'file.organizer'
+ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+"""_________________________________________________________________________________________________________________"""
+
+"""Library of functions"""
+
+
+def create_config_dict():
+    config_dict = dict(config.items('saved_paths'))
+    return config_dict
+
+
+def create_config_file():
+    """
+        Creates the config file
+    """
+    sections = config.sections()
+    section = 'saved_paths'
+    if section not in sections:
+        config.add_section(section)
+        with open('config.ini', 'w') as f:
+            config.write(f)
+
+
+def write_in_config():
+    """
+        This function is the one writing the changes in the config file
+    """
+    with open(CONFIG_LOCATION, 'w') as f:
+        config.write(f)
 
 
 def toastNotifier(message):
+    """
+        this one defines the toast notifier(windows notifications)
+    """
     toast.show_toast("File Organizer", message, os.path.join(RESOURCES, "icon.ico"), 2)
 
 
 def setup(download_path):
+    """
+        this one prepares everything before sorting
+    """
     os.chdir(download_path)
     create_folders(download_path)
     create_ext_file(download_path)
 
 
 def create_folders(download_path):
+    """
+        creates the necessary folders
+    """
     os.chdir(download_path)
     current = os.getcwd()
     files = os.listdir(current)
@@ -35,6 +84,9 @@ def create_folders(download_path):
 
 
 def create_ext_file(download_path):
+    """
+    creates the extension file
+    """
     os.chdir(download_path)
     model_file = os.path.join(RESOURCES, "Extensions_file.txt")
     with open(model_file, 'r') as file:
@@ -47,6 +99,9 @@ def create_ext_file(download_path):
 
 
 def create_mapping(download_path):
+    """
+    creates the mapping between the extension and the folders
+    """
     os.chdir(download_path)
     with open(os.path.join(download_path, ".Folders\\Extensions_file.txt"), 'r') as file:
         images = file.readline()
@@ -74,6 +129,9 @@ def create_mapping(download_path):
 
 
 def sorter(download_path, ext_dict):
+    """
+        sorts the files
+    """
     os.chdir(download_path)
     print("Sorting the files...")
     keys_list = list(ext_dict.keys())
@@ -112,8 +170,44 @@ def sorter(download_path, ext_dict):
     toastNotifier("Finished organizing")
 
 
-def main(download_path):
+def browse():
+    try:
+        options = QFileDialog.Options()
+        # options |= QFileDialog.DontUseNativeDialog
+        options |= QFileDialog.DontUseCustomDirectoryIcons
+
+        dialog = QFileDialog()
+        dialog.setOptions(options)
+
+        dialog.setFileMode(QFileDialog.DirectoryOnly)
+        if dialog.exec_() == QtWidgets.QDialog.Accepted:
+            path = dialog.selectedFiles()[0]  # returns a list
+            return path
+        else:
+            return ''
+    except TypeError:
+        pass
+
+
+def popUpWarning():
+    font = QtGui.QFont()
+    font.setFamily("Calibri")
+    font.setPointSize(13)
+
+    icon = QtGui.QIcon()
+    icon.addPixmap(QtGui.QPixmap(os.path.join(RESOURCES, "icon.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+
+    warning = QMessageBox()
+    warning.setWindowTitle('Invalid path')
+    warning.setWindowIcon(icon)
+    warning.setFont(font)
+    warning.setText("You need to chose a valid path.")
+    warning.setIcon(QMessageBox.Information)
+
+    warning.exec_()
+
+
+def main_sorter(download_path):
     setup(download_path)
     dicto = create_mapping(download_path)
     sorter(download_path, dicto)
-

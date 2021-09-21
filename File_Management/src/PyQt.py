@@ -1,6 +1,3 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
-import sys
 from SorterPyqt import *
 
 
@@ -11,7 +8,7 @@ class Ui_MainWindow(object):
         MainWindow.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         MainWindow.setMouseTracking(False)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join(RESOURCES, "icon.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap('../resources/icon.ico'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         MainWindow.setAutoFillBackground(False)
         MainWindow.setToolButtonStyle(QtCore.Qt.ToolButtonTextOnly)
@@ -44,7 +41,7 @@ class Ui_MainWindow(object):
         self.label = QtWidgets.QLabel(self.frame)
         self.label.setGeometry(QtCore.QRect(270, 20, 41, 41))
         self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap(os.path.join(RESOURCES, "icon.ico")))
+        self.label.setPixmap(QtGui.QPixmap('../resources/icon.ico'))
         self.label.setScaledContents(True)
         self.label.setObjectName("label")
 
@@ -97,7 +94,7 @@ class Ui_MainWindow(object):
 
         self.sort.clicked.connect(self.sort_func)
         self.browseBt.clicked.connect(self.setPath)
-        self.save_path.clicked.connect(self.add_saved_path)
+        self.save_path.clicked.connect(self.show_dialog)
 
         self.retranslateUi(MainWindow)
 
@@ -132,42 +129,99 @@ class Ui_MainWindow(object):
         except OSError:
             popUpWarning()
 
-    def add_saved_path(self):
-        pass
+    def show_dialog(self):
+        Dialog.show()
+        path = self.path.text()
+        ui_dialog.set_path(path)
+
+    def add_saved_paths(self, name):
+        self.savedPaths.addItem(name)
 
 
-def browse():
-    try:
-        options = QFileDialog.Options()
-        # options |= QFileDialog.DontUseNativeDialog
-        options |= QFileDialog.DontUseCustomDirectoryIcons
+class Ui_Dialog(object):
+    def setupUi(self, Dialog):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(561, 209)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(os.path.join('../resources/icon.ico')), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        Dialog.setWindowIcon(icon)
 
-        dialog = QFileDialog()
-        dialog.setOptions(options)
+        self.frame = QtWidgets.QFrame(Dialog)
+        self.frame.setGeometry(QtCore.QRect(0, 0, 561, 251))
+        font = QtGui.QFont()
+        font.setFamily("Calibri")
+        font.setPointSize(14)
+        self.frame.setFont(font)
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
 
-        dialog.setFileMode(QFileDialog.DirectoryOnly)
-        if dialog.exec_() == QtWidgets.QDialog.Accepted:
-            path = dialog.selectedFiles()[0]  # returns a list
-            return path
-        else:
-            return ''
-    except TypeError:
-        pass
+        self.ok_cancel = QtWidgets.QDialogButtonBox(self.frame)
+        self.ok_cancel.setGeometry(QtCore.QRect(380, 170, 161, 32))
+        font = QtGui.QFont()
+        font.setFamily("Calibri")
+        font.setPointSize(12)
+        self.ok_cancel.setFont(font)
+        self.ok_cancel.setOrientation(QtCore.Qt.Horizontal)
+        self.ok_cancel.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+        self.ok_cancel.setObjectName("ok_cancel")
+
+        self.label = QtWidgets.QLabel(self.frame)
+        self.label.setGeometry(QtCore.QRect(30, 20, 41, 31))
+        self.label.setObjectName("label")
+
+        self.dialog_path = QtWidgets.QLineEdit(self.frame)
+        self.dialog_path.setGeometry(QtCore.QRect(80, 20, 451, 31))
+        self.dialog_path.setText("")
+        self.dialog_path.setObjectName("dialog_path")
+
+        self.dialog_name = QtWidgets.QLineEdit(self.frame)
+        self.dialog_name.setGeometry(QtCore.QRect(80, 100, 161, 31))
+        self.dialog_name.setObjectName("dialog_name")
+
+        self.label_2 = QtWidgets.QLabel(self.frame)
+        self.label_2.setGeometry(QtCore.QRect(20, 100, 51, 31))
+        self.label_2.setObjectName("label_2")
+
+        self.name = ''
+        self.path = ''
+
+        self.retranslateUi(Dialog)
+        self.ok_cancel.accepted.connect(self.save_path)
+        self.ok_cancel.rejected.connect(Dialog.reject)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+
+    def retranslateUi(self, Dialog):
+        _translate = QtCore.QCoreApplication.translate
+        Dialog.setWindowTitle(_translate("Dialog", "Set Name for Path"))
+        self.label.setText(_translate("Dialog", "Path:"))
+        self.label_2.setText(_translate("Dialog", "Name:"))
+
+    def save_path(self):
+        self.path = self.dialog_path.text()
+        self.name = self.dialog_name.text()
+
+        config_dict = create_config_dict()
+        values_list = [v for k, v in config_dict.items()]
+
+        if os.path.exists(self.path) and self.path not in values_list:
+            config.set('saved_paths', self.name, self.path)
+            ui_main.add_saved_paths(self.name)
+            with open(CONFIG_LOCATION, 'w') as f:
+                config.write(f)
+
+    def set_path(self, path):
+        self.dialog_path.setText(path)
 
 
-def popUpWarning():
-    font = QtGui.QFont()
-    font.setFamily("Calibri")
-    font.setPointSize(13)
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui_main = Ui_MainWindow()
+    ui_main.setupUi(MainWindow)
+    MainWindow.show()
 
-    icon = QtGui.QIcon()
-    icon.addPixmap(QtGui.QPixmap(os.path.join(RESOURCES, "icon.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-
-    warning = QMessageBox()
-    warning.setWindowTitle('Invalid path')
-    warning.setWindowIcon(icon)
-    warning.setFont(font)
-    warning.setText("You need to chose a valid path.")
-    warning.setIcon(QMessageBox.Information)
-
-    warning.exec_()
+    Dialog = QtWidgets.QDialog()
+    ui_dialog = Ui_Dialog()
+    ui_dialog.setupUi(Dialog)
+    sys.exit(app.exec_())
