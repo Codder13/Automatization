@@ -8,7 +8,7 @@ class Ui_MainWindow(object):
         MainWindow.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         MainWindow.setMouseTracking(False)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap('../resources/icon.ico'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(ICON), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         MainWindow.setAutoFillBackground(False)
         MainWindow.setToolButtonStyle(QtCore.Qt.ToolButtonTextOnly)
@@ -41,7 +41,7 @@ class Ui_MainWindow(object):
         self.label = QtWidgets.QLabel(self.frame)
         self.label.setGeometry(QtCore.QRect(270, 20, 41, 41))
         self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap('../resources/icon.ico'))
+        self.label.setPixmap(QtGui.QPixmap(ICON))
         self.label.setScaledContents(True)
         self.label.setObjectName("label")
 
@@ -71,7 +71,7 @@ class Ui_MainWindow(object):
         self.savedPaths = QtWidgets.QComboBox(self.frame)
         self.savedPaths.setGeometry(QtCore.QRect(130, 150, 161, 31))
         self.savedPaths.setObjectName("savedPaths")
-        self.savedPaths.addItem("")
+
 
         self.label_4 = QtWidgets.QLabel(self.frame)
         self.label_4.setGeometry(QtCore.QRect(20, 150, 111, 31))
@@ -85,6 +85,14 @@ class Ui_MainWindow(object):
         self.save_path.setCheckable(False)
         self.save_path.setObjectName("save_path")
 
+        self.delete_path = QtWidgets.QPushButton(self.frame)
+        self.delete_path.setGeometry(QtCore.QRect(620, 180, 111, 31))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.delete_path.setFont(font)
+        self.delete_path.setCheckable(False)
+        self.delete_path.setObjectName("delete_path")
+
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -95,9 +103,11 @@ class Ui_MainWindow(object):
         self.sort.clicked.connect(self.sort_func)
         self.browseBt.clicked.connect(self.setPath)
         self.save_path.clicked.connect(self.show_dialog)
+        self.delete_path.clicked.connect(self.delete_path_func)
+        self.savedPaths.activated.connect(self.set_combo_path)
 
         self.retranslateUi(MainWindow)
-
+        self.updateComboBox()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -107,9 +117,9 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "Path to folder :"))
         self.sort.setText(_translate("MainWindow", "Sort"))
         self.browseBt.setText(_translate("MainWindow", "Browse.."))
-        self.savedPaths.setItemText(0, _translate("MainWindow", "Custom"))
         self.label_4.setText(_translate("MainWindow", "Saved paths :"))
         self.save_path.setText(_translate("MainWindow", "Save path"))
+        self.delete_path.setText(_translate("MainWindow", "Delete path"))
 
     def getPath(self):
         return self.path.text()
@@ -137,13 +147,37 @@ class Ui_MainWindow(object):
     def add_saved_paths(self, name):
         self.savedPaths.addItem(name)
 
+    def updateComboBox(self):
+        self.savedPaths.clear()
+        self.savedPaths.addItem('Custom')
+        path_dict, name_list, path_list = create_path_dict(CONFIG_LOCATION)
+        for i in range(len(path_dict)):
+            self.savedPaths.addItem(name_list[i], path_list[i])
+
+    def set_combo_path(self, index):
+        path = self.savedPaths.itemData(index)
+        self.path.setText(path)
+
+    def delete_path_func(self):
+        index = self.savedPaths.currentIndex()
+        _, name_list, _ = create_path_dict(CONFIG_LOCATION)
+        try:
+            combo_name = name_list[index - 1]
+            config.remove_option('saved_paths', combo_name)
+            write_in_config()
+            self.savedPaths.clear()
+            self.savedPaths.addItem('Custom')
+            self.updateComboBox()
+        except IndexError:
+            pass
+
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(561, 209)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join('../resources/icon.ico')), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(os.path.join(ICON)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
 
         self.frame = QtWidgets.QFrame(Dialog)
@@ -178,16 +212,14 @@ class Ui_Dialog(object):
         self.dialog_name = QtWidgets.QLineEdit(self.frame)
         self.dialog_name.setGeometry(QtCore.QRect(80, 100, 161, 31))
         self.dialog_name.setObjectName("dialog_name")
+        self.dialog_name.setText("")
 
         self.label_2 = QtWidgets.QLabel(self.frame)
         self.label_2.setGeometry(QtCore.QRect(20, 100, 51, 31))
         self.label_2.setObjectName("label_2")
 
-        self.name = ''
-        self.path = ''
-
         self.retranslateUi(Dialog)
-        self.ok_cancel.accepted.connect(self.save_path)
+        self.ok_cancel.accepted.connect(lambda: self.save_path(Dialog))
         self.ok_cancel.rejected.connect(Dialog.reject)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
@@ -197,11 +229,11 @@ class Ui_Dialog(object):
         self.label.setText(_translate("Dialog", "Path:"))
         self.label_2.setText(_translate("Dialog", "Name:"))
 
-    def save_path(self):
+    def save_path(self, Dialog):
         self.path = self.dialog_path.text()
         self.name = self.dialog_name.text()
 
-        config_dict = create_config_dict()
+        config_dict, _, _ = create_path_dict(CONFIG_LOCATION)
         values_list = [v for k, v in config_dict.items()]
 
         if os.path.exists(self.path) and self.path not in values_list:
@@ -209,6 +241,11 @@ class Ui_Dialog(object):
             ui_main.add_saved_paths(self.name)
             with open(CONFIG_LOCATION, 'w') as f:
                 config.write(f)
+            ui_main.updateComboBox()
+        else:
+            popUpWarning()
+
+        Dialog.close()
 
     def set_path(self, path):
         self.dialog_path.setText(path)

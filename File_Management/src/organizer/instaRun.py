@@ -34,7 +34,7 @@ def create_folders(download_path):
 
 def create_ext_file(download_path):
     Folder_files = os.listdir(os.path.join(download_path, ".Folders"))
-    ext_file = "../resources/Extensions_file.txt"
+    ext_file = "../../resources/Extensions_file.txt"
     if ext_file not in Folder_files:
         with open(os.path.join(download_path, ".Folders\\Extensions_file.txt"), 'a') as ex_file:
             ex_file.write(

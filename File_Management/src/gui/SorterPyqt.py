@@ -3,11 +3,11 @@ import os
 import shutil
 from win10toast import ToastNotifier
 from configparser import ConfigParser
-import sys
 import ctypes
-from PyQt5 import QtCore, QtGui, QtWidgets
+import sys
+from PyQt5 import QtGui, QtWidgets, QtCore
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
-from PyQt import Ui_MainWindow
+
 
 """Variables"""
 USER_NAME = getpass.getuser()
@@ -15,6 +15,7 @@ CONFIG_LOCATION = 'config.ini'
 RESOURCES = f"C:\\Users\\{USER_NAME}\\.organize\\resources\\"
 FOLDERS = [".Folders", ".Installers", ".Music", ".Other", ".Random Code", ".Saved Pictures", ".Saved Videos", ".Text",
            ".Zip Files"]
+ICON = os.path.join(RESOURCES, 'icon.ico')
 """_________________________________________________________________________________________________________________"""
 
 """Other stuff"""
@@ -25,14 +26,19 @@ config.read(CONFIG_LOCATION)
 SECTION = 'saved_paths'
 myappid = 'file.organizer'
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
 """_________________________________________________________________________________________________________________"""
 
 """Library of functions"""
 
 
-def create_config_dict():
-    config_dict = dict(config.items('saved_paths'))
-    return config_dict
+def create_path_dict(config_path):
+    config.read(config_path)
+    path_dict = dict(config.items('saved_paths'))
+    name_list = [x for x, v in path_dict.items()]
+    path_list = [v for x, v in path_dict.items()]
+
+    return path_dict, name_list, path_list
 
 
 def create_config_file():
