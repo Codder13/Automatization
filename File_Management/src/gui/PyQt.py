@@ -165,6 +165,7 @@ class Ui_MainWindow(object):
             combo_name = name_list[index - 1]
             config.remove_option('saved_paths', combo_name)
             write_in_config()
+            self.path.setText('')
             self.savedPaths.clear()
             self.savedPaths.addItem('Custom')
             self.updateComboBox()
