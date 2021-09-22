@@ -129,13 +129,13 @@ class Ui_MainWindow(object):
         self.path.setText(self.browsedPath)
 
     def sort_func(self):
-        DOWNLOAD_PATH = self.getPath()
+        download_path = self.getPath()
         try:
-            os.chdir(DOWNLOAD_PATH)
-            create_folders(DOWNLOAD_PATH)
-            create_ext_file(DOWNLOAD_PATH)
-            EXT_FILE = create_mapping(DOWNLOAD_PATH)
-            sorter(DOWNLOAD_PATH, EXT_FILE)
+            os.chdir(download_path)
+            create_folders(download_path)
+            create_ext_file(download_path)
+            ext_file = create_mapping(download_path)
+            sorter(download_path, ext_file)
         except OSError:
             popUpWarning()
 

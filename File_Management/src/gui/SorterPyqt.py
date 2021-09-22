@@ -8,10 +8,10 @@ import sys
 from PyQt5 import QtGui, QtWidgets, QtCore
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
-
 """Variables"""
 USER_NAME = getpass.getuser()
-CONFIG_LOCATION = 'config.ini'
+DEFAULT_DOWNLOAD_PATH = 'C:\\Users\\Denis\\Desktop\\test'
+CONFIG_LOCATION = '../../resources/config.ini'
 RESOURCES = f"C:\\Users\\{USER_NAME}\\.organize\\resources\\"
 FOLDERS = [".Folders", ".Installers", ".Music", ".Other", ".Random Code", ".Saved Pictures", ".Saved Videos", ".Text",
            ".Zip Files"]
@@ -49,7 +49,7 @@ def create_config_file():
     section = 'saved_paths'
     if section not in sections:
         config.add_section(section)
-        with open('config.ini', 'w') as f:
+        with open('../../resources/config.ini', 'w') as f:
             config.write(f)
 
 
@@ -217,3 +217,7 @@ def main_sorter(download_path):
     setup(download_path)
     dicto = create_mapping(download_path)
     sorter(download_path, dicto)
+
+
+if __name__ == '__main__':
+    main_sorter(DEFAULT_DOWNLOAD_PATH)
