@@ -3,5 +3,5 @@ text = .doc, .txt, .pdf, .xlsx, .docx, .xls, .rtf, .md
 videos = .mp4, .mkv, .webp, .webm
 sounds = .mp3, .wav, .m4a
 applications = .exe, .lnk, .msi
-codes = .c, .java, .py, .cpp, .js, .html, .css, .php, .rar
-zip_files = .zip
+codes = .c, .java, .py, .cpp, .js, .html, .css, .php
+zip_files = .zip, .rar, .7z
