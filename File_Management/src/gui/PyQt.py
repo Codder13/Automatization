@@ -163,7 +163,7 @@ class Ui_MainWindow(object):
         _, name_list, _ = create_path_dict(CONFIG_LOCATION)
         try:
             combo_name = name_list[index - 1]
-            config.remove_option('saved_paths', combo_name)
+            config.remove_option(SECTION, combo_name)
             write_in_config()
             self.path.setText('')
             self.savedPaths.clear()
@@ -238,7 +238,7 @@ class Ui_Dialog(object):
         values_list = [v for k, v in config_dict.items()]
 
         if os.path.exists(self.path) and self.path not in values_list:
-            config.set('saved_paths', self.name, self.path)
+            config.set(SECTION, self.name, self.path)
             ui_main.add_saved_paths(self.name)
             with open(CONFIG_LOCATION, 'w') as f:
                 config.write(f)

@@ -10,12 +10,14 @@ from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
 """Variables"""
 USER_NAME = getpass.getuser()
-DEFAULT_DOWNLOAD_PATH = 'C:\\Users\\Denis\\Desktop\\test'
-CONFIG_LOCATION = '../../resources/config.ini'
-RESOURCES = f"C:\\Users\\{USER_NAME}\\.organize\\resources\\"
+DEFAULT_DOWNLOAD_PATH = f'C:\\Users\\{USER_NAME}\\Downloads'
+RESOURCES = f"C:\\Users\\{USER_NAME}\\AppData\\Roaming\\File Organizer\\resources"
+CONFIG_LOCATION = os.path.join(RESOURCES, 'config.ini')
+SECTION = 'saved_paths'
+ICON = os.path.join(RESOURCES, 'icon.ico')
 FOLDERS = [".Folders", ".Installers", ".Music", ".Other", ".Random Code", ".Saved Pictures", ".Saved Videos", ".Text",
            ".Zip Files"]
-ICON = os.path.join(RESOURCES, 'icon.ico')
+
 """_________________________________________________________________________________________________________________"""
 
 """Other stuff"""
@@ -23,7 +25,7 @@ toast = ToastNotifier()
 
 config = ConfigParser()
 config.read(CONFIG_LOCATION)
-SECTION = 'saved_paths'
+
 myappid = 'file.organizer'
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
@@ -46,10 +48,9 @@ def create_config_file():
         Creates the config file
     """
     sections = config.sections()
-    section = 'saved_paths'
-    if section not in sections:
-        config.add_section(section)
-        with open('../../resources/config.ini', 'w') as f:
+    if SECTION not in sections:
+        config.add_section(SECTION)
+        with open(CONFIG_LOCATION, 'w') as f:
             config.write(f)
 
 
@@ -65,7 +66,7 @@ def toastNotifier(message):
     """
         this one defines the toast notifier(windows notifications)
     """
-    toast.show_toast("File Organizer", message, os.path.join(RESOURCES, "icon.ico"), 2)
+    toast.show_toast("File Organizer", message, ICON, 2)
 
 
 def setup(download_path):
@@ -201,7 +202,7 @@ def popUpWarning():
     font.setPointSize(13)
 
     icon = QtGui.QIcon()
-    icon.addPixmap(QtGui.QPixmap(os.path.join(RESOURCES, "icon.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+    icon.addPixmap(QtGui.QPixmap(ICON), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
     warning = QMessageBox()
     warning.setWindowTitle('Invalid path')
