@@ -1,10 +1,12 @@
+import atexit
+
 from SorterPyqt import *
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.setFixedSize(744, 269)
+        MainWindow.setFixedSize(744, 281)
         MainWindow.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         MainWindow.setMouseTracking(False)
         icon = QtGui.QIcon()
@@ -72,7 +74,6 @@ class Ui_MainWindow(object):
         self.savedPaths.setGeometry(QtCore.QRect(130, 150, 161, 31))
         self.savedPaths.setObjectName("savedPaths")
 
-
         self.label_4 = QtWidgets.QLabel(self.frame)
         self.label_4.setGeometry(QtCore.QRect(20, 150, 111, 31))
         self.label_4.setObjectName("label_4")
@@ -99,6 +100,20 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
 
         MainWindow.setStatusBar(self.statusbar)
+        self.menuBar = QtWidgets.QMenuBar(MainWindow)
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 744, 21))
+        self.menuBar.setObjectName("menuBar")
+
+        self.menuTask = QtWidgets.QMenu(self.menuBar)
+        self.menuTask.setObjectName("menuTask")
+
+        MainWindow.setMenuBar(self.menuBar)
+        self.actionActivate_Task = QtWidgets.QAction(MainWindow)
+        self.actionActivate_Task.setCheckable(True)
+        self.actionActivate_Task.setObjectName("actionActivate_Task")
+        self.menuTask.addAction(self.actionActivate_Task)
+        self.menuBar.addAction(self.menuTask.menuAction())
+        self.actionActivate_Task.setChecked(is_checked(CONFIG_LOCATION))
 
         self.sort.clicked.connect(self.sort_func)
         self.browseBt.clicked.connect(self.setPath)
@@ -109,6 +124,8 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.updateComboBox()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        create_config_file()
+        atexit.register(self.when_checked)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -120,6 +137,19 @@ class Ui_MainWindow(object):
         self.label_4.setText(_translate("MainWindow", "Saved paths :"))
         self.save_path.setText(_translate("MainWindow", "Save path"))
         self.delete_path.setText(_translate("MainWindow", "Delete path"))
+        self.menuTask.setTitle(_translate("MainWindow", "Task"))
+        self.actionActivate_Task.setText(_translate("MainWindow", "Activate Task"))
+        self.actionActivate_Task.setShortcut(_translate("MainWindow", "Ctrl+T"))
+
+    def when_checked(self):
+        if self.actionActivate_Task.isChecked():
+            isChecked = 'True'
+            create_schedule()
+        elif not self.actionActivate_Task.isChecked():
+            isChecked = 'False'
+            delete_schedule()
+        config.set('task', 'bool', isChecked)
+        write_in_config()
 
     def getPath(self):
         return self.path.text()
@@ -163,7 +193,7 @@ class Ui_MainWindow(object):
         _, name_list, _ = create_path_dict(CONFIG_LOCATION)
         try:
             combo_name = name_list[index - 1]
-            config.remove_option(SECTION, combo_name)
+            config.remove_option(SAVED_PATHS, combo_name)
             write_in_config()
             self.path.setText('')
             self.savedPaths.clear()
@@ -238,7 +268,7 @@ class Ui_Dialog(object):
         values_list = [v for k, v in config_dict.items()]
 
         if os.path.exists(self.path) and self.path not in values_list:
-            config.set(SECTION, self.name, self.path)
+            config.set(SAVED_PATHS, self.name, self.path)
             ui_main.add_saved_paths(self.name)
             with open(CONFIG_LOCATION, 'w') as f:
                 config.write(f)

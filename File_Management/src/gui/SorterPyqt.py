@@ -7,16 +7,25 @@ import ctypes
 import sys
 from PyQt5 import QtGui, QtWidgets, QtCore
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
+import subprocess
+import atexit
 
 """Variables"""
 USER_NAME = getpass.getuser()
 DEFAULT_DOWNLOAD_PATH = f'C:\\Users\\{USER_NAME}\\Downloads'
 RESOURCES = f"C:\\Users\\{USER_NAME}\\AppData\\Roaming\\File Organizer\\resources"
 CONFIG_LOCATION = os.path.join(RESOURCES, 'config.ini')
-SECTION = 'saved_paths'
+SAVED_PATHS = 'saved_paths'
+TASK_ACTIVE = 'task'
 ICON = os.path.join(RESOURCES, 'icon.ico')
 FOLDERS = [".Folders", ".Installers", ".Music", ".Other", ".Random Code", ".Saved Pictures", ".Saved Videos", ".Text",
            ".Zip Files"]
+POWERSHELL = 'powershell'
+CreateTask = r'C:\Users\Denis\.organize' \
+             r'\createTask.ps1 '
+DeleteTask = r'C:\Users\Denis\.organize' \
+             r'\deleteTask.ps1'
+# EXE_LOCATION = r'C:\Users\Denis\AppData\Roaming\File Organizer\File Organizer.exe'
 
 """_________________________________________________________________________________________________________________"""
 
@@ -34,9 +43,27 @@ ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 """Library of functions"""
 
 
+def delete_schedule():
+    subprocess.call([POWERSHELL, DeleteTask])
+
+
+def create_schedule():
+    subprocess.call([POWERSHELL, CreateTask])
+
+
+def is_checked(config_path):
+    config.read(config_path)
+    bool_dict = dict(config.items(TASK_ACTIVE))
+    if bool_dict['bool'] == 'True':
+        bool = True
+    else:
+        bool = False
+    return bool
+
+
 def create_path_dict(config_path):
     config.read(config_path)
-    path_dict = dict(config.items('saved_paths'))
+    path_dict = dict(config.items(SAVED_PATHS))
     name_list = [x for x, v in path_dict.items()]
     path_list = [v for x, v in path_dict.items()]
 
@@ -48,10 +75,15 @@ def create_config_file():
         Creates the config file
     """
     sections = config.sections()
-    if SECTION not in sections:
-        config.add_section(SECTION)
-        with open(CONFIG_LOCATION, 'w') as f:
-            config.write(f)
+
+    if SAVED_PATHS not in sections:
+        config.add_section(SAVED_PATHS)
+        write_in_config()
+
+    if TASK_ACTIVE not in sections:
+        config.add_section(TASK_ACTIVE)
+        config.set(TASK_ACTIVE, 'bool', 'False')
+        write_in_config()
 
 
 def write_in_config():

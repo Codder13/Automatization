@@ -1,0 +1,1 @@
+Unregister-ScheduledTask -TaskName "File Organizer" -Confirm:$false
