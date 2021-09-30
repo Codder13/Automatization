@@ -1,16 +1,18 @@
 import getpass
 import os
 import shutil
+import configparser
 from win10toast import ToastNotifier
+from SorterPyqt import CONFIG_LOCATION, get_default_path, RESOURCES, FOLDERS, USER_NAME
 
-USER_NAME = getpass.getuser()
+config = configparser.ConfigParser()
+config.read(CONFIG_LOCATION)
+
 DEFAULT_DOWNLOAD_PATH = f"C:\\Users\\{USER_NAME}\\Downloads\\"
-RESOURCES = f"C:\\Users\\{USER_NAME}\\.organize\\resources\\"
-FOLDERS = [",Folders", ".Installers", ".Music", ".Other", ".Code", ".Pictures", ".Videos", ".Text",
-           ".Zip Files"]
+DOWNLOAD_PATH = get_default_path()
 
 toast = ToastNotifier()
-os.chdir(DEFAULT_DOWNLOAD_PATH)
+os.chdir(DOWNLOAD_PATH)
 current = os.getcwd()
 files = os.listdir(current)
 
@@ -111,4 +113,4 @@ def main(download_path):
 
 
 if __name__ == '__main__':
-    main(DEFAULT_DOWNLOAD_PATH)
+    main(DOWNLOAD_PATH)

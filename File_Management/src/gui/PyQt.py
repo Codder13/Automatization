@@ -94,6 +94,14 @@ class Ui_MainWindow(object):
         self.delete_path.setCheckable(False)
         self.delete_path.setObjectName("delete_path")
 
+        self.set_default = QtWidgets.QPushButton(self.frame)
+        self.set_default.setGeometry(QtCore.QRect(129, 190, 120, 31))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.set_default.setFont(font)
+        self.set_default.setCheckable(False)
+        self.set_default.setObjectName("set_default")
+
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -108,6 +116,9 @@ class Ui_MainWindow(object):
         self.menuTask.setObjectName("menuTask")
 
         MainWindow.setMenuBar(self.menuBar)
+
+        create_config_file()
+
         self.actionActivate_Task = QtWidgets.QAction(MainWindow)
         self.actionActivate_Task.setCheckable(True)
         self.actionActivate_Task.setObjectName("actionActivate_Task")
@@ -115,16 +126,19 @@ class Ui_MainWindow(object):
         self.menuBar.addAction(self.menuTask.menuAction())
         self.actionActivate_Task.setChecked(is_checked(CONFIG_LOCATION))
 
+        self.k = int(config.get(TASK_ACTIVE, 'count'))
+        self.isChecked = None
+
         self.sort.clicked.connect(self.sort_func)
         self.browseBt.clicked.connect(self.setPath)
         self.save_path.clicked.connect(self.show_dialog)
         self.delete_path.clicked.connect(self.delete_path_func)
         self.savedPaths.activated.connect(self.set_combo_path)
+        self.set_default.clicked.connect(self.set_default_path)
 
         self.retranslateUi(MainWindow)
         self.updateComboBox()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        create_config_file()
         atexit.register(self.when_checked)
 
     def retranslateUi(self, MainWindow):
@@ -137,18 +151,33 @@ class Ui_MainWindow(object):
         self.label_4.setText(_translate("MainWindow", "Saved paths :"))
         self.save_path.setText(_translate("MainWindow", "Save path"))
         self.delete_path.setText(_translate("MainWindow", "Delete path"))
+        self.set_default.setText(_translate("MainWindow", "Set Default Path"))
         self.menuTask.setTitle(_translate("MainWindow", "Task"))
         self.actionActivate_Task.setText(_translate("MainWindow", "Activate Task"))
         self.actionActivate_Task.setShortcut(_translate("MainWindow", "Ctrl+T"))
 
+    def set_default_path(self):
+        path = self.path.text()
+        self.savedPaths.setItemData(1, path)
+        config.set(DEFAULT_PATH, 'path', path)
+        write_in_config()
+
     def when_checked(self):
-        if self.actionActivate_Task.isChecked():
-            isChecked = 'True'
+        if self.actionActivate_Task.isChecked() and self.k == 0:
+            self.isChecked = 'True'
+            self.k += 1
             create_schedule()
-        elif not self.actionActivate_Task.isChecked():
-            isChecked = 'False'
+
+            config.set(TASK_ACTIVE, 'count', str(self.k))
+            config.set(TASK_ACTIVE, 'bool', self.isChecked)
+        elif not self.actionActivate_Task.isChecked() and self.k == 1:
+            self.isChecked = 'False'
+            self.k -= 1
             delete_schedule()
-        config.set('task', 'bool', isChecked)
+
+            config.set(TASK_ACTIVE, 'count', str(self.k))
+            config.set(TASK_ACTIVE, 'bool', self.isChecked)
+
         write_in_config()
 
     def getPath(self):
@@ -180,9 +209,14 @@ class Ui_MainWindow(object):
     def updateComboBox(self):
         self.savedPaths.clear()
         self.savedPaths.addItem('Custom')
+        self.savedPaths.addItem('Default')
         path_dict, name_list, path_list = create_path_dict(CONFIG_LOCATION)
         for i in range(len(path_dict)):
             self.savedPaths.addItem(name_list[i], path_list[i])
+
+        default_path = config.get(DEFAULT_PATH, 'path')
+        self.savedPaths.setItemData(1, default_path)
+
 
     def set_combo_path(self, index):
         path = self.savedPaths.itemData(index)
@@ -192,13 +226,19 @@ class Ui_MainWindow(object):
         index = self.savedPaths.currentIndex()
         _, name_list, _ = create_path_dict(CONFIG_LOCATION)
         try:
-            combo_name = name_list[index - 1]
-            config.remove_option(SAVED_PATHS, combo_name)
+            if index > 2:
+                combo_name = name_list[index - 1]
+                config.remove_option(SAVED_PATHS, combo_name)
+            else:
+                config.set(DEFAULT_PATH, 'path', '')
+
             write_in_config()
             self.path.setText('')
             self.savedPaths.clear()
             self.savedPaths.addItem('Custom')
+            self.savedPaths.addItem('Default')
             self.updateComboBox()
+
         except IndexError:
             pass
 
@@ -292,4 +332,5 @@ if __name__ == "__main__":
     Dialog = QtWidgets.QDialog()
     ui_dialog = Ui_Dialog()
     ui_dialog.setupUi(Dialog)
+
     sys.exit(app.exec_())

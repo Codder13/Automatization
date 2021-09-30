@@ -12,7 +12,7 @@ AppId={{BBE35199-E22B-4BB8-AAD2-F59CB2DE41B5}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
-DefaultDirName=C:\Users\Denis\AppData\Roaming\{#MyAppName}
+DefaultDirName=C:\Program Files (x86)
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest

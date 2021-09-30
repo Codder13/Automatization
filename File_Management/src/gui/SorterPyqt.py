@@ -13,18 +13,18 @@ import atexit
 """Variables"""
 USER_NAME = getpass.getuser()
 DEFAULT_DOWNLOAD_PATH = f'C:\\Users\\{USER_NAME}\\Downloads'
-RESOURCES = f"C:\\Users\\{USER_NAME}\\AppData\\Roaming\\File Organizer\\resources"
+RESOURCES = f"resources"
 CONFIG_LOCATION = os.path.join(RESOURCES, 'config.ini')
 SAVED_PATHS = 'saved_paths'
 TASK_ACTIVE = 'task'
+DEFAULT_PATH = 'default'
 ICON = os.path.join(RESOURCES, 'icon.ico')
-FOLDERS = [".Folders", ".Installers", ".Music", ".Other", ".Random Code", ".Saved Pictures", ".Saved Videos", ".Text",
+FOLDERS = [",Folders", ".Installers", ".Music", ".Other", ".Code", ".Pictures", ".Videos", ".Text",
            ".Zip Files"]
 POWERSHELL = 'powershell'
-CreateTask = r'C:\Users\Denis\.organize' \
-             r'\createTask.ps1 '
-DeleteTask = r'C:\Users\Denis\.organize' \
-             r'\deleteTask.ps1'
+CreateTask = os.path.join(RESOURCES, 'createTask.ps1')
+DeleteTask = os.path.join(RESOURCES, 'deleteTask.ps1')
+
 # EXE_LOCATION = r'C:\Users\Denis\AppData\Roaming\File Organizer\File Organizer.exe'
 
 """_________________________________________________________________________________________________________________"""
@@ -41,6 +41,11 @@ ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 """_________________________________________________________________________________________________________________"""
 
 """Library of functions"""
+
+
+def get_default_path():
+    path = config.get(DEFAULT_PATH, 'path')
+    return path
 
 
 def delete_schedule():
@@ -83,6 +88,11 @@ def create_config_file():
     if TASK_ACTIVE not in sections:
         config.add_section(TASK_ACTIVE)
         config.set(TASK_ACTIVE, 'bool', 'False')
+        write_in_config()
+
+    if DEFAULT_PATH not in sections:
+        config.add_section(DEFAULT_PATH)
+        config.set(DEFAULT_PATH, 'path', '')
         write_in_config()
 
 
