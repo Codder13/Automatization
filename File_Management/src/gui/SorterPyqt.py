@@ -13,7 +13,7 @@ import atexit
 """Variables"""
 USER_NAME = getpass.getuser()
 DEFAULT_DOWNLOAD_PATH = f'C:\\Users\\{USER_NAME}\\Downloads'
-RESOURCES = f"resources"
+RESOURCES = f"C:\\Users\\{USER_NAME}\\AppData\\Roaming\\File Organizer\\resources"
 CONFIG_LOCATION = os.path.join(RESOURCES, 'config.ini')
 SAVED_PATHS = 'saved_paths'
 TASK_ACTIVE = 'task'
@@ -22,8 +22,8 @@ ICON = os.path.join(RESOURCES, 'icon.ico')
 FOLDERS = [",Folders", ".Installers", ".Music", ".Other", ".Code", ".Pictures", ".Videos", ".Text",
            ".Zip Files"]
 POWERSHELL = 'powershell'
-CreateTask = os.path.join(RESOURCES, 'createTask.ps1')
-DeleteTask = os.path.join(RESOURCES, 'deleteTask.ps1')
+CreateTask = os.path.join(RESOURCES, "createTask.ps1")
+DeleteTask = os.path.join(RESOURCES, "deleteTask.ps1")
 
 # EXE_LOCATION = r'C:\Users\Denis\AppData\Roaming\File Organizer\File Organizer.exe'
 
@@ -49,11 +49,11 @@ def get_default_path():
 
 
 def delete_schedule():
-    subprocess.call([POWERSHELL, DeleteTask])
+    subprocess.call([POWERSHELL, '-File', DeleteTask])
 
 
 def create_schedule():
-    subprocess.call([POWERSHELL, CreateTask])
+    subprocess.call([POWERSHELL, '-File', CreateTask])
 
 
 def is_checked(config_path):
@@ -140,8 +140,8 @@ def create_ext_file(download_path):
     model_file = os.path.join(RESOURCES, "Extensions_file.txt")
     with open(model_file, 'r') as file:
         extensions = file.read()
-    Folder_files = os.listdir(os.path.join(download_path, ".Folders"))
-    ext_file = os.path.join(download_path, ".Folders\\Extensions_file.txt")
+    Folder_files = os.listdir(os.path.join(download_path, ",Folders"))
+    ext_file = os.path.join(download_path, ",Folders\\Extensions_file.txt")
     if 'Extensions_file.txt' not in Folder_files:
         with open(ext_file, 'w') as ex_file:
             ex_file.write(extensions)
@@ -152,7 +152,7 @@ def create_mapping(download_path):
     creates the mapping between the extension and the folders
     """
     os.chdir(download_path)
-    with open(os.path.join(download_path, ".Folders\\Extensions_file.txt"), 'r') as file:
+    with open(os.path.join(download_path, ",Folders\\Extensions_file.txt"), 'r') as file:
         images = file.readline()
         text = file.readline()
         videos = file.readline()
@@ -169,9 +169,9 @@ def create_mapping(download_path):
         j[-1] = j[-1].split('\n')[0]
         extensions[i] = j
 
-    ext_dict = {".Saved Pictures": extensions[0], ".Text": extensions[1],
-                ".Saved Videos": extensions[2], ".Music": extensions[3],
-                ".Installers": extensions[4], ".Random Code": extensions[5],
+    ext_dict = {".Pictures": extensions[0], ".Text": extensions[1],
+                ".Videos": extensions[2], ".Music": extensions[3],
+                ".Installers": extensions[4], ".Code": extensions[5],
                 ".Zip Files": extensions[6]}
 
     return ext_dict
@@ -212,7 +212,7 @@ def sorter(download_path, ext_dict):
 
         if os.path.isdir(file):
             if file not in FOLDERS:
-                shutil.move(file, os.path.join(download_path, ".Folders"))
+                shutil.move(file, os.path.join(download_path, ",Folders"))
 
     print("Sorting Completed...")
 

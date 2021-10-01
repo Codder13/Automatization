@@ -7,7 +7,7 @@ $User = @"
 "@
 
 $location = @" 
-C:\Program Files (x86)\File Organizer\resources\main.exe
+C:\Users\${myHost}\AppData\Roaming\File Organizer\sort.exe
 "@
 
 $action = New-ScheduledTaskAction -Execute $location -Argument $location

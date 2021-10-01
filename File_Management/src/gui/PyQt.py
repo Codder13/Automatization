@@ -1,5 +1,3 @@
-import atexit
-
 from SorterPyqt import *
 
 
@@ -165,14 +163,14 @@ class Ui_MainWindow(object):
     def when_checked(self):
         if self.actionActivate_Task.isChecked() and self.k == 0:
             self.isChecked = 'True'
-            self.k += 1
+            self.k = 1
             create_schedule()
 
             config.set(TASK_ACTIVE, 'count', str(self.k))
             config.set(TASK_ACTIVE, 'bool', self.isChecked)
         elif not self.actionActivate_Task.isChecked() and self.k == 1:
             self.isChecked = 'False'
-            self.k -= 1
+            self.k = 0
             delete_schedule()
 
             config.set(TASK_ACTIVE, 'count', str(self.k))
@@ -217,7 +215,6 @@ class Ui_MainWindow(object):
         default_path = config.get(DEFAULT_PATH, 'path')
         self.savedPaths.setItemData(1, default_path)
 
-
     def set_combo_path(self, index):
         path = self.savedPaths.itemData(index)
         self.path.setText(path)
@@ -226,11 +223,11 @@ class Ui_MainWindow(object):
         index = self.savedPaths.currentIndex()
         _, name_list, _ = create_path_dict(CONFIG_LOCATION)
         try:
-            if index > 2:
-                combo_name = name_list[index - 1]
-                config.remove_option(SAVED_PATHS, combo_name)
-            else:
+            if index == 1:
                 config.set(DEFAULT_PATH, 'path', '')
+            else:
+                combo_name = name_list[index - 2]
+                config.remove_option(SAVED_PATHS, combo_name)
 
             write_in_config()
             self.path.setText('')
