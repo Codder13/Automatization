@@ -62,12 +62,7 @@ def create_mapping(download_path):
         j[-1] = j[-1].split('\n')[0]
         extensions[i] = j
 
-    ext_dict = {".Saved Pictures": extensions[0], ".Text": extensions[1],
-                ".Saved Videos": extensions[2], ".Music": extensions[3],
-                ".Installers": extensions[4], ".Random Code": extensions[5],
-                ".Zip Files": extensions[6]}
-
-    return ext_dict
+    return {".Saved Pictures": extensions[0], ".Text": extensions[1], ".Saved Videos": extensions[2], ".Music": extensions[3], ".Installers": extensions[4], ".Random Code": extensions[5], ".Zip Files": extensions[6]}
 
 
 def sorter(download_path, ext_dict):
@@ -78,10 +73,10 @@ def sorter(download_path, ext_dict):
     for file in files:
         destination = ""
 
-        for i in range(len(keys_list)):
-            for ex in ext_dict[keys_list[i]]:
+        for keys in keys_list:
+            for ex in ext_dict[keys]:
                 if file.endswith(ex):
-                    destination = os.path.join(download_path, keys_list[i])
+                    destination = os.path.join(download_path, keys)
 
                     if os.path.isfile(os.path.join(destination, file)):
                         try:
@@ -94,13 +89,11 @@ def sorter(download_path, ext_dict):
 
                     break
 
-        if os.path.isfile(file):
-            if destination == "":
-                shutil.move(file, os.path.join(download_path, ".Other"))
+        if os.path.isfile(file) and destination == "":
+            shutil.move(file, os.path.join(download_path, ".Other"))
 
-        if os.path.isdir(file):
-            if file not in FOLDERS:
-                shutil.move(file, os.path.join(download_path, ".Folders"))
+        if os.path.isdir(file) and file not in FOLDERS:
+            shutil.move(file, os.path.join(download_path, ".Folders"))
 
     print("Sorting Completed...")
 

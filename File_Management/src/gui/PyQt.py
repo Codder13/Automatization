@@ -1,3 +1,4 @@
+import contextlib
 from SorterPyqt import *
 
 
@@ -8,7 +9,8 @@ class Ui_MainWindow(object):
         MainWindow.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         MainWindow.setMouseTracking(False)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(ICON), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(ICON),
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         MainWindow.setAutoFillBackground(False)
         MainWindow.setToolButtonStyle(QtCore.Qt.ToolButtonTextOnly)
@@ -35,7 +37,8 @@ class Ui_MainWindow(object):
         font.setFamily("Calibri")
         font.setPointSize(22)
         self.label_2.setFont(font)
-        self.label_2.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse)
+        self.label_2.setTextInteractionFlags(
+            QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse)
         self.label_2.setObjectName("label_2")
 
         self.label = QtWidgets.QLabel(self.frame)
@@ -47,7 +50,8 @@ class Ui_MainWindow(object):
 
         self.label_3 = QtWidgets.QLabel(self.frame)
         self.label_3.setGeometry(QtCore.QRect(10, 90, 121, 31))
-        self.label_3.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse)
+        self.label_3.setTextInteractionFlags(
+            QtCore.Qt.LinksAccessibleByMouse | QtCore.Qt.TextSelectableByMouse)
         self.label_3.setObjectName("label_3")
 
         self.path = QtWidgets.QLineEdit(self.frame)
@@ -151,8 +155,10 @@ class Ui_MainWindow(object):
         self.delete_path.setText(_translate("MainWindow", "Delete path"))
         self.set_default.setText(_translate("MainWindow", "Set Default Path"))
         self.menuTask.setTitle(_translate("MainWindow", "Task"))
-        self.actionActivate_Task.setText(_translate("MainWindow", "Activate Task"))
-        self.actionActivate_Task.setShortcut(_translate("MainWindow", "Ctrl+T"))
+        self.actionActivate_Task.setText(
+            _translate("MainWindow", "Activate Task"))
+        self.actionActivate_Task.setShortcut(
+            _translate("MainWindow", "Ctrl+T"))
 
     def set_default_path(self):
         path = self.path.text()
@@ -205,9 +211,7 @@ class Ui_MainWindow(object):
         self.savedPaths.addItem(name)
 
     def updateComboBox(self):
-        self.savedPaths.clear()
-        self.savedPaths.addItem('Custom')
-        self.savedPaths.addItem('Default')
+        self._extracted_from_delete_path_func_2()
         path_dict, name_list, path_list = create_path_dict(CONFIG_LOCATION)
         for i in range(len(path_dict)):
             self.savedPaths.addItem(name_list[i], path_list[i])
@@ -222,7 +226,7 @@ class Ui_MainWindow(object):
     def delete_path_func(self):
         index = self.savedPaths.currentIndex()
         _, name_list, _ = create_path_dict(CONFIG_LOCATION)
-        try:
+        with contextlib.suppress(IndexError):
             if index == 1:
                 config.set(DEFAULT_PATH, 'path', '')
             else:
@@ -231,13 +235,14 @@ class Ui_MainWindow(object):
 
             write_in_config()
             self.path.setText('')
-            self.savedPaths.clear()
-            self.savedPaths.addItem('Custom')
-            self.savedPaths.addItem('Default')
+            self._extracted_from_delete_path_func_2()
             self.updateComboBox()
 
-        except IndexError:
-            pass
+    # TODO Rename this here and in `updateComboBox` and `delete_path_func`
+    def _extracted_from_delete_path_func_2(self):
+        self.savedPaths.clear()
+        self.savedPaths.addItem('Custom')
+        self.savedPaths.addItem('Default')
 
 
 class Ui_Dialog(object):
@@ -245,7 +250,8 @@ class Ui_Dialog(object):
         Dialog.setObjectName("Dialog")
         Dialog.resize(561, 209)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(os.path.join(ICON)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(os.path.join(ICON)),
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
 
         self.frame = QtWidgets.QFrame(Dialog)
@@ -265,7 +271,8 @@ class Ui_Dialog(object):
         font.setPointSize(12)
         self.ok_cancel.setFont(font)
         self.ok_cancel.setOrientation(QtCore.Qt.Horizontal)
-        self.ok_cancel.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+        self.ok_cancel.setStandardButtons(
+            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
         self.ok_cancel.setObjectName("ok_cancel")
 
         self.label = QtWidgets.QLabel(self.frame)

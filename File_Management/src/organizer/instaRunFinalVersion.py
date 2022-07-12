@@ -63,28 +63,29 @@ print("Sorting the files...")
 for file in files:
     destination = ""
 
-    for i in range(len(keys_list)):
-        for ex in dict[keys_list[i]]:
+    for keys in keys_list:
+        for ex in dict[keys]:
             if file.endswith(ex):
-                destination = os.path.join(download_path, keys_list[i])
+                destination = os.path.join(download_path, keys)
 
                 if os.path.isfile(os.path.join(destination, file)):
                     try:
-                        shutil.move(file, os.path.join(download_path, ".Other\\.Duplicates"))
+                        shutil.move(file, os.path.join(
+                            download_path, ".Other\\.Duplicates"))
                     except shutil.Error:
-                        new_path_file = os.path.join(download_path, ".Other\\.Duplicates")
-                        os.rename(file, os.path.join(new_path_file, f"DUP {file}"))
+                        new_path_file = os.path.join(
+                            download_path, ".Other\\.Duplicates")
+                        os.rename(file, os.path.join(
+                            new_path_file, f"DUP {file}"))
                 else:
                     shutil.move(file, destination)
 
                 break
 
-    if os.path.isfile(file):
-        if destination == "":
-            shutil.move(file, os.path.join(download_path, ".Other"))
+    if os.path.isfile(file) and destination == "":
+        shutil.move(file, os.path.join(download_path, ".Other"))
 
-    if os.path.isdir(file):
-        if file not in folders:
-            shutil.move(file, os.path.join(download_path, ".Folders"))
+    if os.path.isdir(file) and file not in folders:
+        shutil.move(file, os.path.join(download_path, ".Folders"))
 
 print("Sorting Completed...")

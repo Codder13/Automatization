@@ -12,8 +12,7 @@ def main(download_path):
     sorter(download_path, dicto)
 
 
+import contextlib
 if __name__ == '__main__':
-    try:
+    with contextlib.suppress(OSError):
         main(DOWNLOAD_PATH)
-    except OSError:
-        pass
