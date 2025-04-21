@@ -14,20 +14,41 @@ FOLDERS = [",Folders", ".Installers", ".Music", ".Other", ".Code", ".Pictures", 
 # Ensure resources directory exists
 os.makedirs(RESOURCES, exist_ok=True)
 
+# Set up the toast notifier
 toast = ToastNotifier()
 
 
 def toastNotifier(message):
-    icon_path = os.path.join(RESOURCES, "icon.ico")
-    # Use default notification if icon doesn't exist
-    if not os.path.exists(icon_path):
-        icon_path = None
+    # Look for icon in multiple potential locations
+    icon_paths = [
+        os.path.join(RESOURCES, "icon.ico"),
+        os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "resources", "icon.ico"),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "resources", "icon.ico")
+    ]
+    
+    # Use the first icon that exists
+    icon_path = None
+    for path in icon_paths:
+        if os.path.exists(path):
+            icon_path = path
+            break
     
     try:
-        toast.show_toast("File Organizer", message, icon_path, 2)
-    except Exception:
+        # Longer duration (5 seconds) and threaded=True to avoid blocking
+        toast.show_toast(
+            title="File Organizer",
+            msg=message,
+            icon_path=icon_path,
+            duration=5,
+            threaded=True
+        )
+        # Give the notification time to appear
+        import time
+        time.sleep(0.5)  
+    except Exception as e:
         # Fallback if toast notification fails
         print(f"Notification: {message}")
+        print(f"Toast error: {e}")
 
 
 def setup(download_path):
