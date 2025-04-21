@@ -238,10 +238,37 @@ def sorter(download_path, ext_dict):
                         print(f"Error moving file {file} to .Other folder: {e}")
                 
                 elif os.path.isdir(file_path) and file not in FOLDERS:
-                    try:
-                        shutil.move(file_path, os.path.join(download_path, ",Folders"))
-                    except (OSError, IOError) as e:
-                        print(f"Error moving directory {file} to ,Folders: {e}")
+                    folders_dir = os.path.join(download_path, ",Folders")
+                    # Check if a folder with the same name already exists in the ,Folders directory
+                    if os.path.exists(os.path.join(folders_dir, file)):
+                        try:
+                            # This folder already exists in ,Folders, move to .Duplicates
+                            duplicates_folder = os.path.join(download_path, ".Other", ".Duplicates")
+                            # Ensure the duplicates folder exists
+                            if not os.path.exists(duplicates_folder):
+                                os.makedirs(duplicates_folder, exist_ok=True)
+                                
+                            # Try to move the folder to duplicates
+                            target_path = os.path.join(duplicates_folder, file)
+                            
+                            # If target already exists, create a unique name
+                            if os.path.exists(target_path):
+                                counter = 1
+                                while os.path.exists(os.path.join(duplicates_folder, f"DUP_{counter}_{file}")):
+                                    counter += 1
+                                target_path = os.path.join(duplicates_folder, f"DUP_{counter}_{file}")
+                            
+                            # Move folder to duplicates
+                            shutil.move(file_path, target_path)
+                            print(f"Moved duplicate folder '{file}' to .Duplicates")
+                        except (OSError, IOError) as e:
+                            print(f"Error moving duplicate folder {file} to .Duplicates: {e}")
+                    else:
+                        # Normal case - move to ,Folders
+                        try:
+                            shutil.move(file_path, folders_dir)
+                        except (OSError, IOError) as e:
+                            print(f"Error moving directory {file} to ,Folders: {e}")
         
         print("Sorting Completed...")
         toastNotifier("Finished organizing")
