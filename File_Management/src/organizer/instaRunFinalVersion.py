@@ -86,6 +86,6 @@ for file in files:
         shutil.move(file, os.path.join(download_path, ".Other"))
 
     if os.path.isdir(file) and file not in folders:
-        shutil.move(file, os.path.join(download_path, ".Folders"))
+        shutil.move(file, os.path.join(download_path, ",Folders"))
 
 print("Sorting Completed...")
